@@ -1,13 +1,17 @@
 # plants-vs-zombies
-_Introduction_
-This is a simple version of action-strategy game Plants vs Zombies. The playing field includes 3 horizontal lanes. a zombie is able to move only one lane towards the house. The plants are placed stationary on one lane and not able to move. The goal is to use plants to protect owner's house and stop a cohort of zombies from reaching it. If the house is breached by any zombie, the game is lost.
+### MVP
+### Introduction
+This is a simple version of action-strategy game Plants vs Zombies. The playing field includes only one horizontal lanes. a zombie is able to move only one horizontal direction towards the house. The plants are placed stationary on one lane and not able to move. The goal is to use plants to protect owner's house and stop a cohort of zombies from reaching it.
 - Home owner can make money through collecting suns dropping on the lawn.
-- Plants can be dragged and placed on the lawn if there are enough money in the owner's bank account.
-- Plants include sunflower, peashooter, seeds, cactus, walnut.
-- Sunflower can accelerate sun production, it has the lowest defensive capacity and no attacking capacity.
+- Suns are falling on lawns randomly at a set time frame.
+- Plants include peashooter, seeds, and walnut.
 - Each plant has its unique offensive or defensive capability.
-- The vitality status of plants and zombies are visually presented.
-- peashooter and cactus are able to launch seeds to shoot zombies.
-- There are three different kinds of zombies and they have different attacking or defending capacity.
+- peashooter is able to launch seeds/bullets to shoot zombies and decrease zombies' vitality.
+- If all zombies are dead, you win the game. If any zombie breaches the house, game is lost.
 
-_Specs_
+###Specs and Planning
+- setInterval to generate suns by createElement. The position is randomly distributed inside the lawn.
+- addEventListener to the lawn and if click event's target is the same as sun's className, add money to the bank.
+- select plants and placed the plant on lawn. deduct money from bank.
+- setInterval to generate zombies.
+- if collision happens, deduct the according vitality for either plants or zombies.
