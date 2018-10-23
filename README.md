@@ -9,9 +9,10 @@ This is a simple version of action-strategy game Plants vs Zombies. The playing 
 - peashooter is able to launch seeds/bullets to shoot zombies and decrease zombies' vitality.
 - If all zombies are dead, you win the game. If any zombie breaches the house, game is lost.
 
-###Specs and Planning
+### Specs and Planning
 - setInterval to generate suns by createElement. The position is randomly distributed inside the lawn.
 - addEventListener to the lawn and if click event's target is the same as sun's className, add money to the bank.
-- select plants and placed the plant on lawn. deduct money from bank.
+- select plants on the console.
+- place the plant on lawn. deduct money from bank.
 - setInterval to generate zombies.
 - if collision happens, deduct the according vitality for either plants or zombies.
