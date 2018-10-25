@@ -4,7 +4,7 @@ let gameState = {
   isZombieWin: false,
   isSunExist: true,
   plantArr: [],
-  readyPlant: []
+  readyPlant: {}
 }
 
 
@@ -29,7 +29,8 @@ let backgroundEle = document.querySelector('.background');
 let gameConsoleEle = document.querySelector('.game-console');
 let peaConsoleEle = document.querySelector('#peashooter');
 let walnutConsoleEle = document.querySelector('#walnut');
-let pathEle = document.querySelector('.path');
+let sodPathEle = document.querySelector('.sod');
+
 let createSuns = function() {
   let sunEle = document.createElement('img');
   sunEle.className = "sun";
@@ -60,8 +61,14 @@ let createSuns = function() {
   // sunEle.style.top = sunTop + 'px';
 }
 
-
-let placePlant = function(evt) {
+let createPlants = function() {
+  let plant = document.createElement('img');
+  plant.className = 'plant';
+  plant.style.left = '0px';
+  plant.style.top = '4px';
+  return plant;
+}
+let selectPlant = function(evt) {
   if (gameState.sunCount < 50) {
     walnutConsoleEle.id = 'walnut';
     peaConsoleEle.id = 'peashooter';
@@ -75,6 +82,9 @@ let placePlant = function(evt) {
 
   if (evt.target.id === "peashooter-active") {
     gameState.sunCount -= 100;
+    sodPathEle.addEventListener('click',placePlant);
+    gameState.readyPlant = createPlants();
+    gameState.readyPlant.src = "./assets/peashooter/attack_00.png";
     sunCountEle.innerText = gameState.sunCount;
     if(gameState.sunCount < 50) {
       walnutConsoleEle.id = 'walnut';
@@ -84,6 +94,9 @@ let placePlant = function(evt) {
     }
   } else if (evt.target.id === 'walnut-active') {
     gameState.sunCount -= 50;
+    sodPathEle.addEventListener('click', placePlant);
+    gameState.readyPlant = createPlants();
+    gameState.readyPlant.src = 'assets/plant-walnut.png'
     sunCountEle.innerText = gameState.sunCount;
     if (gameState.sunCount < 50) {
       evt.target.id = "walnut";
@@ -116,51 +129,51 @@ let collectSun = function(evt) {
     }, 20);
   }
 }
-// let selectPlant = function(evt) {
-//   if (gameState.sunCount >= 100) {
-//     evt.target.addEventListener('click', placePlant);
-//   }
-// }
-let dragPlant = function() {
-  console.log('dragPlant now')
-  if(evt.target.id === 'peashooter-active') {
-    let readyPlant = document.createElement('img');
-    readyPlant.className = "plant";
-    readyPlant.src = "plant-cactus.gif"
-    backgroundEle.appendChild(readyPlant);
-  } else if (evt.target.id === 'walnut-active') {
-    let readyPlant = document.createElement('img');
-    readyPlant.className = 'plant';
-    readyPlant.src = 'plant-walnut.png';
-    backgroundEle.appendChild(readyPlant);
+
+let placePlant = function(evt) {
+  if (evt.offsetX > 30 && evt.offsetX + 20 < this.offsetWidth) {
+    if (gameState.readyPlant) {
+      let plant = gameState.readyPlant;
+      plant.style.left = evt.offsetX - 48 + 'px';
+      sodPathEle.appendChild(plant);
+      gameState.readyPlant.length = 0;
+      sodPathEle.removeEventListener('click', placePlant);
+    }
   }
+  console.log(sodPathEle);
 }
 
+let createZombies = function() {
+
+}
 
 window.onload = function() {
   createSuns();
+  createZombies();
+
   let sunCreateTimer = setInterval(createSuns, 6000);
   backgroundEle.addEventListener('click', collectSun);
 //  gameConsoleEle.addEventListener('drag', dragPlant);
-  gameConsoleEle.addEventListener('click', placePlant);
+  gameConsoleEle.addEventListener('click', selectPlant);
 
 }
 
-pathEle.onclick = function(event) {
-  if(event.offsetX > 25 && event.offsetX + 50 < this.offsetWidth) {
-      if(!!plant && event.target.className !== "action plant") {
-          plant.style.left = event.offsetX - 25 + 'px';
-          setStar(-plant.dataset.star);
-          this.appendChild(plant);
-          plantArr.push(plant);
-          if(parseInt(plant.dataset.damage) !== 0) {
-              bullet.push(createBullet(plant.dataset.speed, plant.dataset.damage, event.offsetX + 25));
-          }
-          clearStyle();
-          plant = null;
-            }
-        }
-      }
+
+// sodPathEle.onclick = function(evt) {
+//   if(evt.offsetX > 244 && evt.offsetX + 54 < this.offsetWidth) {
+//       if(gameState.readyPlant && event.target.className !== "action plant") {
+//           plant.style.left = event.offsetX - 25 + 'px';
+//           setStar(-plant.dataset.star);
+//           this.appendChild(plant);
+//           plantArr.push(plant);
+//           if(parseInt(plant.dataset.damage) !== 0) {
+//               bullet.push(createBullet(plant.dataset.speed, plant.dataset.damage, event.offsetX + 25));
+//           }
+//           clearStyle();
+//           plant = null;
+//             }
+//         }
+//       }
 
 function createBullet(speed, position, damage) {
   let bullet = document.createElement('img');
@@ -169,7 +182,7 @@ function createBullet(speed, position, damage) {
   bullet.style.positionX = positionX + 'px';
   bullet.dataset.damage = damage;
   bullet.src = "assets/plant-bullet.gif";
-  pathEle.appendChild(bullet);
+  sodPathEle.appendChild(bullet);
   return bullet;
 }
 
