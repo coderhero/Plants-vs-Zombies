@@ -4,7 +4,8 @@ let gameState = {
   isZombieWin: false,
   isSunExist: true,
   plantArr: [],
-  readyPlant: {}
+  readyPlant: {},
+  bullets: []
 }
 
 
@@ -136,11 +137,12 @@ let placePlant = function(evt) {
       let plant = gameState.readyPlant;
       plant.style.left = evt.offsetX - 48 + 'px';
       sodPathEle.appendChild(plant);
+      plantArr.push(plant);
       gameState.readyPlant.length = 0;
       sodPathEle.removeEventListener('click', placePlant);
+      bullets.push(createBullet(50, event.offsetX, 1));
     }
   }
-  console.log(sodPathEle);
 }
 
 let createZombies = function() {
@@ -158,7 +160,6 @@ window.onload = function() {
 
 }
 
-
 // sodPathEle.onclick = function(evt) {
 //   if(evt.offsetX > 244 && evt.offsetX + 54 < this.offsetWidth) {
 //       if(gameState.readyPlant && event.target.className !== "action plant") {
@@ -173,7 +174,7 @@ window.onload = function() {
 //           plant = null;
 //             }
 //         }
-//       }
+//     }
 
 function createBullet(speed, position, damage) {
   let bullet = document.createElement('img');
@@ -185,8 +186,6 @@ function createBullet(speed, position, damage) {
   sodPathEle.appendChild(bullet);
   return bullet;
 }
-
-
 // setInterval(function() {
 //     for(var i = 0; i < plantArr.length; i++) {
 //         if(parseInt(plantArr[i].dataset.damage) !== 0) {
