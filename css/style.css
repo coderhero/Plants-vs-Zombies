@@ -10,7 +10,15 @@ body, div, img {
   overflow: hidden;
   position: relative;
 }
+.background > .sod {
+  width: 755px;
+  height: 117px;
+  position: absolute;
+  z-index: 30;
+  left: 244px;
+  top: 250px;
 
+}
 .plant {
   position: absolute;
   width: 100px;

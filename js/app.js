@@ -43,13 +43,15 @@ let createSuns = function() {
   let sunFallTimer = setInterval(function() {
     if (sunEle.offsetTop > sunTop) {
       clearInterval(sunFallTimer);
-      setTimeout(function() {
-        if (gameState.isSunExist) {
-          sunEle.style.left = "-60px";
-          sunEle.style.top = "-60px";
-          backgroundEle.removeChild(sunEle);
-        }
-      }, 3000);
+      if (sunEle.offsetTop > 360 || sunEle.offsetTop < 240) {
+        setTimeout(function() {
+          if (gameState.isSunExist) {
+            sunEle.style.left = "-60px";
+            sunEle.style.top = "-60px";
+            backgroundEle.removeChild(sunEle);
+          }
+        }, 3000);
+      }
      }
      else {
        sunEle.style.top = sunEle.offsetTop + 16 + 'px';
@@ -160,16 +162,16 @@ pathEle.onclick = function(event) {
         }
       }
 
-// function createBullet(speed, position, damage) {
-//   let bullet = document.createElement('img');
-//   bullet.className = 'bullet';
-//   bullet.dataset.speed = speed;
-//   bullet.style.positionX = positionX + 'px';
-//   bullet.dataset.damage = damage;
-//   bullet.src = "assets/plant-bullet.gif";
-//   pathEle.appendChild(bullet);
-//   return bullet;
-// }
+function createBullet(speed, position, damage) {
+  let bullet = document.createElement('img');
+  bullet.className = 'bullet';
+  bullet.dataset.speed = speed;
+  bullet.style.positionX = positionX + 'px';
+  bullet.dataset.damage = damage;
+  bullet.src = "assets/plant-bullet.gif";
+  pathEle.appendChild(bullet);
+  return bullet;
+}
 
 
 // setInterval(function() {
