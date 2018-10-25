@@ -37,3 +37,51 @@ body, div, img {
   position: absolute;
   z-index: 900;
 }
+.game-console {
+  width: 700px;
+  height: 100px;
+  margin-left: 170px;
+  border: 2px solid blue;
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr;
+  border-radius: 14px;
+  padding: 26px;
+}
+.plant-console {
+  width: 100px;
+  height: 60px;
+  position: relative;
+  background-size: cover;
+}
+.plant-console > span {
+  margin-left: 64px;
+  top: 40px;
+  z-index: 300;
+  position: absolute;
+  font-weight: 600;
+}
+#peashooter {
+  background: url(../assets/plants/peashooterGray.png);
+}
+#walnut {
+  background: url(../assets/plants/walNutGray.png);
+}
+#peashooter-active {
+  background: url(../assets/plants/peashooter.png);
+}
+#walnut-active {
+  background: url(../assets/plants/walnut.png);
+}
+.sun-bank {
+  width: 250px;
+  height: 64px;
+  background: url(../assets/plants/sunBank.png);
+  background-size: cover;
+}
+#suncount {
+  position: absolute;
+  font-size: 18px;
+  font-weight: 600;
+  margin-left: 150px;
+  margin-top: 20px;
+}
