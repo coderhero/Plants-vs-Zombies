@@ -5,7 +5,8 @@ let gameState = {
   isSunExist: true,
   plantArr: [],
   readyPlant: {},
-  bullets: []
+  bullets: [],
+  zombiesArr: []
 }
 
 
@@ -85,7 +86,9 @@ let selectPlant = function(evt) {
     gameState.sunCount -= 100;
     sodPathEle.addEventListener('click',placePlant);
     gameState.readyPlant = createPlants();
-    gameState.readyPlant.src = "./assets/peashooter/attack_00.png";
+    gameState.readyPlant.src = "./assets/peashooter.gif";
+    gameState.readyPlant.dataset.attack = 2;
+    gameState.readyPlant.dataset.speed = 50;
     sunCountEle.innerText = gameState.sunCount;
     if(gameState.sunCount < 50) {
       walnutConsoleEle.id = 'walnut';
@@ -98,6 +101,7 @@ let selectPlant = function(evt) {
     sodPathEle.addEventListener('click', placePlant);
     gameState.readyPlant = createPlants();
     gameState.readyPlant.src = 'assets/plant-walnut.png'
+    gameState.readyPlant.dataset.attack = 0;
     sunCountEle.innerText = gameState.sunCount;
     if (gameState.sunCount < 50) {
       evt.target.id = "walnut";
@@ -137,21 +141,18 @@ let placePlant = function(evt) {
       let plant = gameState.readyPlant;
       plant.style.left = evt.offsetX - 48 + 'px';
       sodPathEle.appendChild(plant);
-      plantArr.push(plant);
+      gameState.plantArr.push(plant);
       gameState.readyPlant.length = 0;
       sodPathEle.removeEventListener('click', placePlant);
-      bullets.push(createBullet(50, event.offsetX, 1));
+      gameState.bullets.push(createBullet(50, event.offsetX, 1));
     }
   }
 }
 
-let createZombies = function() {
-
-}
 
 window.onload = function() {
   createSuns();
-  createZombies();
+  let zombieCreateTimer = setInterval(createZombies, 4000);
 
   let sunCreateTimer = setInterval(createSuns, 6000);
   backgroundEle.addEventListener('click', collectSun);
@@ -160,57 +161,64 @@ window.onload = function() {
 
 }
 
-// sodPathEle.onclick = function(evt) {
-//   if(evt.offsetX > 244 && evt.offsetX + 54 < this.offsetWidth) {
-//       if(gameState.readyPlant && event.target.className !== "action plant") {
-//           plant.style.left = event.offsetX - 25 + 'px';
-//           setStar(-plant.dataset.star);
-//           this.appendChild(plant);
-//           plantArr.push(plant);
-//           if(parseInt(plant.dataset.damage) !== 0) {
-//               bullet.push(createBullet(plant.dataset.speed, plant.dataset.damage, event.offsetX + 25));
-//           }
-//           clearStyle();
-//           plant = null;
-//             }
-//         }
-//     }
-
 function createBullet(speed, position, damage) {
   let bullet = document.createElement('img');
   bullet.className = 'bullet';
   bullet.dataset.speed = speed;
-  bullet.style.positionX = positionX + 'px';
+  bullet.style.left = position + 'px';
   bullet.dataset.damage = damage;
   bullet.src = "assets/plant-bullet.gif";
   sodPathEle.appendChild(bullet);
   return bullet;
 }
-// setInterval(function() {
-//     for(var i = 0; i < plantArr.length; i++) {
-//         if(parseInt(plantArr[i].dataset.damage) !== 0) {
-//             bullet.push(createBullet(plantArr[i].dataset.speed, plantArr[i].dataset.damage, plantArr[i].offsetLeft + 25));
-//             }
-//         }
-//     }, 9000);
-//
-// setInterval(function() {
-//     for(var i = 0; i < bullet.length; i++) {
-//         bullet[i].style.left = bullet[i].offsetLeft + parseInt(bullet[i].dataset.speed) + "px";
-//         for(var j = 0; j < zombiesArr.length; j++) {
-//             if(bullet[i].offsetLeft + bullet[i].offsetWidth - 30 >= zombiesArr[j].offsetLeft) {
-//                 if(bullet[i].offsetLeft - zombiesArr[j].offsetLeft - zombiesArr[j].offsetWidth < 5) {
-//                     calcDamage(zombiesArr[j], bullet[i], '11.gif')
-//                     zombiesState(j, zombiesArr[j], zombiesArr)
-//                     road.removeChild(bullet[i])
-//                         bullet.splice(i, 1);
-//                         break;
-//                     }
-//                     if(bullet[i].offsetLeft + bullet[i].offsetWidth > road.offsetWidth) {
-//                         bullet[i].parentNode.removeChild(bullet[i]);
-//                         bullet.splice(i, 1);
-//                     }
-//                 }
-//             }
-//         }
-//     }, 20);
+
+let createZombies = function() {
+  let zombie = document.createElement('img');
+  zombie.className = "zombie";
+  zombie.src = "assets/zombie-01.gif";
+  gameState.zombiesArr.push(zombie);
+  console.log(gameState.zombiesArr);
+  zombie.style.left = '1100px'
+  sodPathEle.appendChild(zombie);
+
+  let zombieMoveTimer = setInterval(function() {
+    for (var i = 0; i < gameState.zombiesArr.length; i++) {
+      if(gameState.zombiesArr[i].offsetLeft < 150) {
+        clearInterval(zombieMoveTimer);
+        window.alert('Zombies Win')
+      } else {
+        gameState.zombiesArr[i].style.left = gameState.zombiesArr[i].offsetLeft - 10 + 'px';
+      }
+    }
+  }, 50)
+};
+
+
+setInterval(function() {
+  for(var i = 0; i < gameState.plantArr.length; i++) {
+      if(parseInt(gameState.plantArr[i].dataset.attack) !== 0) {
+          gameState.bullets.push(createBullet(gameState.plantArr[i].dataset.speed, gameState.plantArr[i].offsetLeft + 25, gameState.plantArr[i].dataset.attack));
+        }
+    }
+  }, 9000);
+
+setInterval(function() {
+  for(var i = 0; i < gameState.bullets.length; i++) {
+      gameState.bullets[i].style.left = gameState.bullets[i].offsetLeft + parseInt(gameState.bullets[i].dataset.speed) + "px";
+      for(var j = 0; j < gameState.zombiesArr.length; j++) {
+          if(gameState.bullets[i].offsetLeft + gameState.bullets[i].offsetWidth - 30 >= gameState.zombiesArr[j].offsetLeft) {
+              if(gameState.bullets[i].offsetLeft - gameState.zombiesArr[j].offsetLeft - gameState.zombiesArr[j].offsetWidth < 5) {
+                calcDamage(gameState.zombiesArr[j], gameState.bullets[i], '11.gif')
+                zombiesState(j, gameState.zombiesArr[j], gameState.zombiesArr)
+                road.removeChild(gameState.bullets[i])
+                    gameState.bullets.splice(i, 1);
+                    break;
+                }
+                if(gameState.bullets[i].offsetLeft + gameState.bullets[i].offsetWidth > sodPathEle.offsetWidth) {
+                    gameState.bullets[i].parentNode.removeChild(gameState.bullets[i]);
+                    gameState.bullets.splice(i, 1);
+                }
+            }
+        }
+    }
+  }, 20);

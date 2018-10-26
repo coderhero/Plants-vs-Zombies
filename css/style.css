@@ -33,6 +33,7 @@ body, div, img {
   width: 64px;
   height: 126px;
   z-index: 888;
+  left: 1100px;
 }
 
 .bullet {
@@ -40,6 +41,8 @@ body, div, img {
   width: 34px;
   height: 34px;
   z-index: 900;
+  top: 0px;
+  margin: 0 auto;
 }
 .sun {
   width: 80px;
