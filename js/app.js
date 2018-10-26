@@ -179,18 +179,19 @@ let createZombies = function() {
   gameState.zombiesArr.push(zombie);
   console.log(gameState.zombiesArr);
   zombie.style.left = '1100px'
+  zombie.style.bottom = '14px';
   sodPathEle.appendChild(zombie);
 
   let zombieMoveTimer = setInterval(function() {
     for (var i = 0; i < gameState.zombiesArr.length; i++) {
-      if(gameState.zombiesArr[i].offsetLeft < 150) {
+      if(gameState.zombiesArr[i].offsetLeft < -50) {
         clearInterval(zombieMoveTimer);
         window.alert('Zombies Win')
       } else {
-        gameState.zombiesArr[i].style.left = gameState.zombiesArr[i].offsetLeft - 10 + 'px';
+        gameState.zombiesArr[i].style.left = gameState.zombiesArr[i].offsetLeft - 6 + 'px';
       }
     }
-  }, 50)
+  }, 500)
 };
 
 
@@ -208,8 +209,8 @@ setInterval(function() {
       for(var j = 0; j < gameState.zombiesArr.length; j++) {
           if(gameState.bullets[i].offsetLeft + gameState.bullets[i].offsetWidth - 30 >= gameState.zombiesArr[j].offsetLeft) {
               if(gameState.bullets[i].offsetLeft - gameState.zombiesArr[j].offsetLeft - gameState.zombiesArr[j].offsetWidth < 5) {
-                calcDamage(gameState.zombiesArr[j], gameState.bullets[i], '11.gif')
-                zombiesState(j, gameState.zombiesArr[j], gameState.zombiesArr)
+              //  calcDamage(gameState.zombiesArr[j], gameState.bullets[i], 'gif')
+              //  zombiesState(j, gameState.zombiesArr[j], gameState.zombiesArr)
                 road.removeChild(gameState.bullets[i])
                     gameState.bullets.splice(i, 1);
                     break;
@@ -221,4 +222,4 @@ setInterval(function() {
             }
         }
     }
-  }, 20);
+  }, 200);
