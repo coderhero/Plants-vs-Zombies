@@ -10,21 +10,246 @@ let gameState = {
 }
 
 
-let walnut = {
-  cost: 50,
-  defence: 5,
-  attack: false
+function Peashooter() {
+  // peashooter initialization
+  this.plant = this.init();
+  let plantsContainer = document.querySelector('.plants-container');
+  let zombiesContainer = document.querySelector('.zombies-container');
+  this.vitality = 3;
+  this.shootTime = 3000;
+
 }
-let peashooter = {
-  cost: 100,
-  defence: 2,
-  attack: true
+// peashooter prototype initialization
+Peashooter.prototype.init = function() {
+    let peashooter = document.createElement("div");
+    peashooter.innerHTML = '<img src="assets/peashooter.gif">';
+    return peashooter;
+};
+// place the plant in which position
+Peashooter.prototype.placePlant = function(left) {
+  let peashooter = this.plant;
+  peashooter.style.left = (left || 480) + 'px';
+  peashooter.style.top = 250 + 'px';
+  plants.appendChild(peashooter);
 }
-let Walnut = function() {
-  this.cost = 50;
-  this.defence = 5;
-  this.attack = true;
+Peashooter.prototype.pod = function() {
+  let pod = document.createElement('img');
+  pod.src = 'assets/plant-bullet.gif';
+  pod.className = "bullet";
+  pod.style.left = this.plant.offsetLeft + 32 + 'px';
+  pod.style.top = this.plant.offsetTop - 2 + 'px';
+  zombiesContainer.appendChild(pod);
+  return pod;
 }
+
+// Peashooter.prototype.shoot = function(zombiesG) {
+//   let self = this;
+//   // create the function of pod to kill zombies
+//   let generateShoot = function() {
+//     if(zombiesG < 1) {
+//       return;
+//     }
+//     let zombieOnTheRightOffSetArr = [];
+//     for(let i in zombiesG) {
+//       if(zombiesG[i].zombie === false) {
+//         continue;
+//       }
+//       if(self.plant === false) {
+//         continue;
+//       }
+//       zombieOnTheRightOffSetArr.push(zombiesG[i].zombie.offseLeft);
+//     }
+//     let pod = self.pod();
+//     pod.moveTimer = setInterval(function() {
+//       pod.style.left = pod.offsetLeft + 10 + 'px';
+//
+//       for (var i = 0; i < zombiesG.length; i++) {
+//         let zombie = zombiesG[i];
+//         if(!zombie.zombie || !self.plant) continue;
+//         // when the zombie is at the left of the plant, stop shooting
+//         if ((zombie.zombie.offsetLeft + 34) < self.plant.offsetLeft - 74) continue;
+//         // when pod hits the zombie
+//         if (bullet.offsetLeft > js.zombie.offsetLeft + 55) {
+//             clearInterval(pod.moveTimer);
+//             pod.moveTimer = null;
+//             bullet.src = "assets/podHit.gif";
+//             setTimeout(function () {
+//                 if (bullet.parentNode != zombiesContainer) return;
+//                 zombiesContainer.removeChild(bullet);
+//             }, 260);
+//             if (zombie.vitality >= 0) {
+//               zombie.vitality -= 1;
+//             }
+//        }
+//        //when the zombie is at the right side of the peashooter
+//        if ((zombie.zombie.offesetLeft + 34) > (self.plant.offsetLeft + self.plant.offsetWidth)
+//        && zombie.vitality >= 0 && self.vitality >= 0) {
+//          if (zombie.vitality == 2) {
+//              zombie.lostHead();
+//              zombie.stopWalk();
+//              zombie.noHeadWalk();
+//          }else if (zombie.vitality == 1) {
+//              zombie.down();
+//          }else if (zombie.vitality == 0) {
+//              zombie.die(zombieDeadGroup);
+//           //   self.stopShoot();
+//              //delete dead zombie
+//              zombiesG.remove(zombie);
+//              newZombiesGroup = zombiesG;
+//              //all zombies dead and you win
+//              if (zombieDeadGroup.length >= zombiesTotal) {
+//                  if (zombiesTotal < 8) {
+//                      setTimeout(function () {
+//                          alert("success you can enter next");
+//                         // window.location.href = "game.html#" + (jsAll + 1);
+//                          window.location.reload();
+//                      }, 1000);
+//                  }else {
+//                      gamePass();
+//                  }
+//              }
+//              //shoot the remaining zombies
+//              self.shoot(newZombiesGroup);
+//          }
+//          return false;
+//
+//        }else if((zombie.zombie.offsetLeft + 35) <= (self.plant.offsetLeft + self.plant.offsetWidth) && zombie.blood >= 0 && zombie.blood >= 0) {
+//       // zombie approach and eat plants
+//       if (zombie.blood > 0) {
+//           self.blood -= 1;
+//       }
+//       // record the zombie stopped walking
+//       zombieStoppedGroup.push(zombie);
+//       //delete the repeat count
+//       zombieStoppedGroup.distinct();
+//       if (zombie.blood > 2) {
+//           zombie.eatPlant();
+//       }else if (zombie.blood == 2) {
+//           zombie.lostHead();
+//           zombie.noHeadEatPlant();
+//       }else if (zombie.blood == 1) {
+//           zombie.down();
+//       }else if (zombie.blood == 0) {
+//           zombie.die(zombieDeadGroup);
+//         //  self.stopShoot();
+//           zombiesG.remove(zombie);
+//           newZombiesGroup = zombiesG;
+//           // all zombies dead and you win
+//           if (zombieDeadGroup.length >= zombiesTotal) {
+//               if (zombiesTotal < 8) {
+//                   setTimeout(function () {
+//                       alert("you win!");
+//                     //  window.location.reload();
+//                   }, 1000);
+//               }else {
+//                   gamePass();
+//               }
+//           }
+//           self.shoot(newZombiesGroup);
+//
+//       }
+//       if (self.vitality == 0) {
+//           self.stopShoot();
+//           self.die();
+//           //let the stopped zombies walking
+//           for (let i in zombieStoppedGroup) {
+//               if (zombieStoppedGroup[i].vitality > 2) {
+//                   zombieStoppedGroup[i].walk();
+//               }
+//               if (zombieStoppedGroup[i].vitality == 2 ) {
+//                   zombieStoppedGroup[i].noHeadWalk();
+//               }
+//           }
+//           zombieStoppedGroup = [];
+//         }
+//       }
+//     }
+//
+//   },  30)
+// };
+// to create the Zombie Object
+function Zombie() {
+  let zombiesContainer = document.querySelector('.zombies-container');
+  this.zombie = this.init();
+  // this.category = "zombie";
+  this.vitality = 6;
+  this.left = 900;
+  this.walkSpeed = 70;
+
+}
+Zombie.prototype.init = function() {
+  let zombie = document.createElement('div');
+  zombie.style.left = this.left + 'px';
+  zombie.innerHTML = `<img src='assets/zombie-01.gif'>`;
+  zombiesContainer.appendChild(zombie);
+  return zombie;
+
+}
+// zombie walking function
+Zombie.prototype.walk = function() {
+  let self = this;
+  self.zombieWalk = setInterval(function () {
+      self.zombie.style.left = self.zombie.offsetLeft - 1 + "px";
+      if (self.zombie.offsetLeft < -100) {
+          if (gameEnd) return;
+          gameOver();
+      }
+  }, self.walkSpeed);
+  let img = self.zombie.querySelector("img");
+  img.src = "assets/zombie-01.gif";
+
+};
+Zombie.prototype.noHeadWalk = function () {
+    let self = this;
+    self.zombieWalk = setInterval(function () {
+        self.zombie.style.left = self.zombie.offsetLeft - 1 + "px";
+        if (self.zombie.offsetLeft < -100) {
+            if (gameEnd) return;
+            gameOver();
+        }
+    }, self.walkSpeed);
+    let img = self.zombie.querySelector("img");
+    img.src = "assets/zombieLoseHead.gif";
+
+};
+Zombie.prototype.loseHead = function () {
+    let head = document.createElement("img");
+    head.src = "assets/zombie-01-head.gif";
+    head.className = "zombieHead";
+    head.style.left = self.zombie.offsetLeft + "px";
+    head.style.top = self.zombie.offsetTop + "px";
+    zombiesContainer.appendChild(head);
+    setTimeout(function () {
+        zombiesContainer.removeChild(head);
+    }, 1000);
+};
+// zombie stop walking
+Zombie.prototype.stopWalk = function() {
+  clearInterval(this.zombieWalk);
+}
+// eat the plants
+Zombie.prototype.eatPlant = function() {
+  this.stopWalk();
+  let img = this.zombie.querySelector('img');
+  img.src = "assets/zombieAttack.gif"
+}
+Zombie.prototype.eatPlantWithoutHead = function() {
+  this.stopWalk();
+  let img = this.zombie.querySelector('img');
+  img.src = "assets/zombieNoHeadAttack.gif"
+}
+// zombie is dying
+Zombie.prototype.getDown = function() {
+  this.stopWalk();
+  let img = this.zombie.querySelector('img');
+  img.src = 'assets/zombieDying.gif'
+}
+// zombie is dead
+Zombie.prototype.die = function(zombieDeadGroup) {
+  zombieDeadGroup.push(true);
+  zombiesContainer.removeChild(this.zombie);
+}
+
 
 let sunCountEle = document.querySelector('#suncount');
 let backgroundEle = document.querySelector('.background');
@@ -144,7 +369,7 @@ let placePlant = function(evt) {
       gameState.plantArr.push(plant);
       gameState.readyPlant.length = 0;
       sodPathEle.removeEventListener('click', placePlant);
-      gameState.bullets.push(createBullet(50, event.offsetX, 1));
+      gameState.bullets.push(createBullet(10, event.offsetX, 1));
     }
   }
 }
@@ -185,13 +410,13 @@ let createZombies = function() {
   let zombieMoveTimer = setInterval(function() {
     for (var i = 0; i < gameState.zombiesArr.length; i++) {
       if(gameState.zombiesArr[i].offsetLeft < -50) {
-        clearInterval(zombieMoveTimer);
-        window.alert('Zombies Win')
+      clearInterval(zombieMoveTimer);
+      //  window.alert('Zombies Win')
       } else {
-        gameState.zombiesArr[i].style.left = gameState.zombiesArr[i].offsetLeft - 6 + 'px';
+        gameState.zombiesArr[i].style.left = gameState.zombiesArr[i].offsetLeft - 1 + 'px';
       }
     }
-  }, 500)
+  }, 10)
 };
 
 
@@ -201,7 +426,7 @@ setInterval(function() {
           gameState.bullets.push(createBullet(gameState.plantArr[i].dataset.speed, gameState.plantArr[i].offsetLeft + 25, gameState.plantArr[i].dataset.attack));
         }
     }
-  }, 9000);
+  }, 3000);
 
 setInterval(function() {
   for(var i = 0; i < gameState.bullets.length; i++) {
@@ -211,9 +436,11 @@ setInterval(function() {
               if(gameState.bullets[i].offsetLeft - gameState.zombiesArr[j].offsetLeft - gameState.zombiesArr[j].offsetWidth < 5) {
               //  calcDamage(gameState.zombiesArr[j], gameState.bullets[i], 'gif')
               //  zombiesState(j, gameState.zombiesArr[j], gameState.zombiesArr)
-                road.removeChild(gameState.bullets[i])
-                    gameState.bullets.splice(i, 1);
-                    break;
+              gameState.zombiesArr[j].remove();
+                gameState.zombiesArr.splice(j, 1);
+                sodPathEle.removeChild(gameState.bullets[i])
+                gameState.bullets.splice(i, 1);
+                break;
                 }
                 if(gameState.bullets[i].offsetLeft + gameState.bullets[i].offsetWidth > sodPathEle.offsetWidth) {
                     gameState.bullets[i].parentNode.removeChild(gameState.bullets[i]);
