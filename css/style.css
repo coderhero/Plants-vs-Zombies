@@ -1,7 +1,13 @@
 
-body, div, img {
+* {
   margin: 0;
   padding: 0;
+  font-size: 14px;
+  user-select: none;
+
+}
+body {
+  background: #f49841;
 }
 
 .background {
@@ -30,11 +36,10 @@ body, div, img {
 
 .zombie {
   position: absolute;
-  width: 64px;
-  height: 126px;
-  z-index: 888;
-  left: 1100px;
+  top: 0;
+  left: 10px;
 }
+
 
 .bullet {
   position: absolute;
