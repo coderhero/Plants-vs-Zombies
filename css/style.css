@@ -22,8 +22,22 @@ body {
   position: absolute;
   z-index: 30;
   left: 244px;
-  top: 250px;
+  top: 280px;
 
+}
+.background > .plants-container {
+  position: absolute;
+  height: 117px;
+  left: 0;
+  top: 290px;
+  z-index: 99;
+
+}
+.background > .zombies-container {
+  position: absolute;
+  left: 0;
+  top: 230px;
+  z-index: 40;
 }
 .plant {
   position: absolute;
@@ -88,7 +102,7 @@ body {
   background: url(../assets/plants/peashooter.png);
 }
 #walnut-active {
-  background: url(../assets/plants/walnut.png);
+  background: url(../assets/plants/walNut.png);
 }
 .sun-bank {
   width: 250px;
