@@ -20,24 +20,36 @@ body {
   width: 755px;
   height: 117px;
   position: absolute;
-  z-index: 30;
+  z-index: 2;
   left: 244px;
   top: 280px;
 
 }
 .background > .plants-container {
   position: absolute;
-  height: 117px;
   left: 0;
-  top: 290px;
-  z-index: 99;
+  top: 0;
+  z-index: 3;
 
+}
+.plants-container div {
+  position: absolute;
+  top: 290px;
+  z-index: 90;
 }
 .background > .zombies-container {
   position: absolute;
   left: 0;
+  top: 0;
+  z-index: 3;
+}
+.zombies-container div {
+  position: absolute;
   top: 230px;
   z-index: 40;
+}
+.zombies-container img {
+  position: absolute;
 }
 .plant {
   position: absolute;
@@ -51,7 +63,7 @@ body {
 .zombie {
   position: absolute;
   top: 0;
-  left: 10px;
+  left: 1000px;
 }
 
 
@@ -59,9 +71,8 @@ body {
   position: absolute;
   width: 34px;
   height: 34px;
-  z-index: 900;
-  top: 0px;
-  margin: 0 auto;
+  z-index: 98;
+  
 }
 .sun {
   width: 80px;
@@ -116,4 +127,8 @@ body {
   font-weight: 600;
   margin-left: 150px;
   margin-top: 20px;
+}
+.zombieHead {
+  position: absolute;
+  z-index: 89;
 }

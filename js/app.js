@@ -56,7 +56,9 @@ Peashooter.prototype.shoot = function(zombiesG) {
         continue;
       }
       // if there is zombie and peashooter
-      zombiesOffSetArr.push(zombiesG[i].zombie.offsetLeft);
+      let tempOffSetLeft = zombiesG[i].zombie.offsetLeft;
+      zombiesOffSetArr.push(tempOffSetLeft);
+
     }
     // if there is no zombie on the peashooter's right side, then don't shoot
     // if ((Math.max.apply(null, zombieOnTheRightOffSetArr) + 35) < self.plant.offsetLeft - 75) return;
@@ -81,6 +83,7 @@ Peashooter.prototype.shoot = function(zombiesG) {
           }, 260);
           if (zombie.vitality >= 0) {
             zombie.vitality -= 1;
+            console.log(zombie.vitality);
           }
         }
         //when the zombie is at the right side of the peashooter
@@ -123,7 +126,7 @@ Peashooter.prototype.shoot = function(zombiesG) {
           // record the amount of zombies stopped walking
           zombieStoppedGroup.push(zombie);
           //delete the repeat count
-          zombieStoppedGroup.distinct();
+          zombieStoppedGroup.unique();
           if (zombie.vitality > 2) {
             zombie.eatPlant();
           } else if (zombie.vitality == 2) {
@@ -169,7 +172,7 @@ Peashooter.prototype.shoot = function(zombiesG) {
 
     }, 30);
   };
-  //build another pod after a period of time
+  //build another pod to shoot zombie after a period of time
   this.podFly = setInterval(generateShoot, self.shootTime);
 };
 
@@ -193,10 +196,14 @@ function Zombie() {
   this.walkSpeed = 70;
 
 }
+
 Zombie.prototype.init = function() {
   let zombieEle = document.createElement('div');
+  zombieEle.className = "zombie";
   zombieEle.style.left = this.left + 'px';
-  zombieEle.innerHTML = `<img src='assets/zombie-01.gif'>`;
+  // the offsetLeft is not working
+  // console.log(zombieEle.offsetLeft)
+  zombieEle.innerHTML = "<img src='assets/zombie-01.gif'>";
   zombiesContainer.appendChild(zombieEle);
   return zombieEle;
 
@@ -206,14 +213,13 @@ Zombie.prototype.walk = function() {
   let self = this;
   self.zombieWalk = setInterval(function() {
     self.zombie.style.left = self.zombie.offsetLeft - 1 + "px";
-    if (self.zombie.offsetLeft < -100) {
+    if (self.zombie.offsetLeft < 140) {
       if (gameEnd) return;
       gameOver();
     }
   }, self.walkSpeed);
   let img = self.zombie.querySelector("img");
   img.src = "assets/zombie-01.gif";
-
 };
 Zombie.prototype.noHeadWalk = function() {
   let self = this;
@@ -272,7 +278,7 @@ let gameOver = function() {
   let endingMessage = document.createElement('img');
   endingMessage.src = "assets/gameOver.jpg"
   endingMessage.className = "ZombieWinsMessage"
-  background.appendChild(endingMessage);
+  backgroundEle.appendChild(endingMessage);
   setTimeout(function() {
     window.alert('Game is Over, Zombie wins')
   }, 2800);
@@ -289,7 +295,7 @@ let peaConsoleEle = document.querySelector('#peashooter');
 let walnutConsoleEle = document.querySelector('#walnut');
 let bgImageEle = document.querySelector('#bgImage');
 
-let totalZombies = 12;
+let totalZombies = 8;
 // let currentZombies = [];
 // zombies already show
 let zombiesGroup = [];
@@ -328,6 +334,10 @@ Sun.prototype.dropSun = function() {
         setTimeout(function() {
           sunEle.style.left = "-60px";
           sunEle.style.top = "-60px";
+          if(sunEle.parentNode != backgroundEle) {
+            // stop the removeChild function if sun is no longer in the child node
+            return;
+          }
           backgroundEle.removeChild(sunEle);
         }, 3000);
       }
@@ -336,48 +346,6 @@ Sun.prototype.dropSun = function() {
     }
   }, 20);
 }
-
-let selectPlant = function(evt) {
-  if (gameState.sunCount < 50) {
-    walnutConsoleEle.id = 'walnut';
-    peaConsoleEle.id = 'peashooter';
-  } else if (gameState.sunCount < 100) {
-    walnutConsoleEle.id = 'walnut-active';
-    peaConsoleEle.id = 'peashooter';
-  } else if (gameState.sunCount >= 100) {
-    peaConsoleEle.id = "peashooter-active";
-    walnutConsoleEle.id = "walnut-active"
-  }
-
-  if (evt.target.id === "peashooter-active") {
-    plantsContainer.addEventListener('click', placePlant);
-    gameState.readyPlant = "peashooter";
-
-    if (gameState.sunCount < 50) {
-      walnutConsoleEle.id = 'walnut';
-      peaConsoleEle.id = "peashooter";
-    } else if (gameState.sunCount < 100) {
-      evt.target.id = "peashooter";
-    }
-  } else if (evt.target.id === 'walnut-active') {
-    gameState.sunCount -= 50;
-    plantsContainer.addEventListener('click', placePlant);
-    gameState.readyPlant = 'walnut';
-    sunCountEle.innerText = gameState.sunCount;
-    if (gameState.sunCount < 50) {
-      evt.target.id = "walnut";
-      peaConsoleEle.id = "peashooter";
-    } else if (gameState.sunCount < 100) {
-      peaConsoleEle.id = 'peashooter';
-    }
-  }
-}
-
-let gameState = {
-  sunCount: 0,
-  readyPlant: ''
-}
-
 let collectSun = function(evt) {
   if (evt.target.className === "sun") {
     gameState.sunCount += 50;
@@ -398,22 +366,65 @@ let collectSun = function(evt) {
       }
     }, 20);
   }
+};
+
+let selectPlant = function(evt) {
+  if (gameState.sunCount < 50) {
+    walnutConsoleEle.id = 'walnut';
+    peaConsoleEle.id = 'peashooter';
+  } else if (gameState.sunCount < 100) {
+    walnutConsoleEle.id = 'walnut-active';
+    peaConsoleEle.id = 'peashooter';
+  } else if (gameState.sunCount >= 100) {
+    peaConsoleEle.id = "peashooter-active";
+    walnutConsoleEle.id = "walnut-active"
+  }
+
+  if (evt.target.id === "peashooter-active") {
+    sodPathEle.addEventListener('click', placePlant);
+    console.log('ready to place plant')
+    gameState.readyPlant = "peashooter";
+
+    if (gameState.sunCount < 50) {
+      walnutConsoleEle.id = 'walnut';
+      peaConsoleEle.id = "peashooter";
+    } else if (gameState.sunCount < 100) {
+      evt.target.id = "peashooter";
+    }
+  } else if (evt.target.id === 'walnut-active') {
+    gameState.sunCount -= 50;
+    sodPathEle.addEventListener('click', placePlant);
+    gameState.readyPlant = 'walnut';
+    sunCountEle.innerText = gameState.sunCount;
+    if (gameState.sunCount < 50) {
+      evt.target.id = "walnut";
+      peaConsoleEle.id = "peashooter";
+    } else if (gameState.sunCount < 100) {
+      peaConsoleEle.id = 'peashooter';
+    }
+  }
+}
+
+let gameState = {
+  sunCount: 0,
+  readyPlant: ''
 }
 
 let placePlant = function(evt) {
-  if (evt.offsetX > 30 && evt.offsetX + 20 < this.offsetWidth) {
+  if (evt.clientX > 30 && evt.clientX + 20 < this.offsetWidth) {
     let plant;
     if (gameState.readyPlant === "peashooter") {
       plant = new Peashooter;
+      plant.shoot(zombiesGroup);
       gameState.sunCount -= 100;
     } else if (gameState.readyPlant === 'walnut') {
       plant = new Walnut;
       gameState.sunCount -= 50;
     }
-    plant.plant.style.left = evt.offsetX - 48 + 'px';
-    plantsContainer.appendChild(plant);
+    plant.plant.style.left = evt.clientX - 48 + 'px';
+    plantsContainer.appendChild(plant.plant);
     gameState.readyPlant = '';
-    plantsContainer.removeEventListener('click', placePlant);
+    sodPathEle.removeEventListener('click', placePlant);
     sunCountEle.innerText = gameState.sunCount;
   }
 }
@@ -438,7 +449,6 @@ let gameBegin = function() {
         let zombie = new Zombie();
         zombiesGroup.push(zombie);
         zombiesTotal.push(zombie);
-        console.log(zombie);
         zombie.walk();
       }, 3000);
 
@@ -469,4 +479,30 @@ let gameBegin = function() {
       }, 25000);
     },
     4000);
+};
+
+function Walnut() {
+  this.plant = this.init();
+  this.vitality = 8;
+
+}
+Walnut.prototype.init = function() {
+  let plant = document.createElement('div');
+  plant.innerHTML = "<img src='assets/plant-walnut.png'"
+  return plant;
+}
+// helper function to delete repeat in Array
+Array.prototype.unique = function(){
+    for(var i = 0; i < this.length; i++){
+        var n = this[i];
+        this.splice(i, 1, null);
+        // if there is no repeat
+        if(this.indexOf(n) < 0){
+            this.splice(i, 1, n);
+        }else{
+          // if there is repeat
+            this.splice(i, 1);
+        }
+    }
+    return this;
 };
