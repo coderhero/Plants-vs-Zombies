@@ -111,7 +111,7 @@ Peashooter.prototype.shoot = function(zombiesG) {
                 setTimeout(function() {
                   alert("success you can enter next level");
                   // window.location.href = "game.html#" + (zombiesTotal + 1);
-                  window.location.href = 'index.html'
+                  // window.location.href = 'index.html'
                   window.location.reload();
                 }, 1000);
               } else {
@@ -203,7 +203,7 @@ function Zombie() {
   // this.category = "zombie";
   this.vitality = 6;
   this.left = 900;
-  this.walkSpeed = 110;
+  this.walkSpeed = 30;
 
 }
 
@@ -291,8 +291,11 @@ let gameOver = function() {
   endingMessage.className = "ZombieWinsMessage";
   backgroundEle.appendChild(endingMessage);
   setTimeout(function() {
-    window.alert('Game is Over, Zombie wins')
+    window.alert('Game is Over, Zombie wins. Please try again!')
   }, 2800);
+  setTimeout(function() {
+    location.reload();
+  }, 3000);
 };
 
 
@@ -380,16 +383,6 @@ let collectSun = function(evt) {
 };
 
 let selectPlant = function(evt) {
-  if (gameState.sunCount < 50) {
-    walnutConsoleEle.id = 'walnut';
-    peaConsoleEle.id = 'peashooter';
-  } else if (gameState.sunCount < 100) {
-    walnutConsoleEle.id = 'walnut-active';
-    peaConsoleEle.id = 'peashooter';
-  } else if (gameState.sunCount >= 100) {
-    peaConsoleEle.id = "peashooter-active";
-    walnutConsoleEle.id = "walnut-active"
-  }
 
   if (evt.target.id === "peashooter-active") {
     sodPathEle.addEventListener('click', placePlant);
@@ -412,6 +405,18 @@ let selectPlant = function(evt) {
     }
   }
 }
+let updatePlantMenu = function() {
+  if (gameState.sunCount < 50) {
+    walnutConsoleEle.id = 'walnut';
+    peaConsoleEle.id = 'peashooter';
+  } else if (gameState.sunCount < 100) {
+    walnutConsoleEle.id = 'walnut-active';
+    peaConsoleEle.id = 'peashooter';
+  } else if (gameState.sunCount >= 100) {
+    peaConsoleEle.id = "peashooter-active";
+    walnutConsoleEle.id = "walnut-active"
+  }
+};
 
 let gameState = {
   sunCount: 0,
@@ -429,10 +434,12 @@ let placePlant = function(evt) {
       plant = new Walnut;
       gameState.sunCount -= 50;
     }
+    console.log(plant.plant);
     plant.plant.style.left = evt.offsetX - 48 + 'px';
     plantsContainer.appendChild(plant.plant);
     gameState.readyPlant = '';
     sodPathEle.removeEventListener('click', placePlant);
+    updatePlantMenu();
     sunCountEle.innerText = gameState.sunCount;
   }
 }
@@ -491,7 +498,7 @@ function Walnut() {
 }
 Walnut.prototype.init = function() {
   let plant = document.createElement('div');
-  plant.innerHTML = "<img src='assets/plant-walnut.png'"
+  plant.innerHTML = '<img src="assets/plant-walnut.png">'
   return plant;
 }
 // helper function to delete repeat in Array

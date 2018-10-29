@@ -2,7 +2,8 @@
 ### MVP
 ### Introduction
 This is a simple prototype of action-strategy game Plants vs Zombies. The playing field is a sterile lawn with one horizontal sod lanes. a zombie is able to move horizontally from the right side of the lawn towards the house. The plants are placed on the sod lane and they are stationary. The goal is to grow plants on lawn to protect owner's house and stop a cohort of zombies from reaching it.
-
+### Game Screen Shot
+![ScreenShot](gameScreenShot.png) 
 ### Gameplay
 - Game starts with sun coins of zero and no plants or zombies on the lawn.
 - Home owner can increase sun coins through collecting suns dropping on the lawn.
