@@ -10,7 +10,6 @@ let walnutConsoleEle = document.querySelector('#walnut');
 let bgImageEle = document.querySelector('#bgImage');
 
 let totalAmountOfZombies = 12;
-// let currentZombies = [];
 // zombies already show
 let zombiesGroup = [];
 // all of zombies
@@ -69,12 +68,8 @@ Peashooter.prototype.shoot = function(zombiesG) {
       if (self.plant === false) {
         continue;
       }
-      // this if statement is intended to check if there is no zombie on the peashooter's right side, then don't shoot
-      // if there is zombie and peashooter
-      // let tempOffSetLeft = zombiesG[i].zombie.offsetLeft;
-      // zombiesOffSetArr.push(tempOffSetLeft);
+
     }
-    // if ((Math.max.apply(null, zombieOnTheRightOffSetArr) + 35) < self.plant.offsetLeft - 75) return;
     let pod = self.pod();
     // this timer is used for pod flying/shooting animation
     pod.moveTimer = setInterval(function() {
@@ -99,11 +94,9 @@ Peashooter.prototype.shoot = function(zombiesG) {
             zombie.vitality -= 1;
           }
         }
-        //when the zombie is at the right side of the peashooter
-        // if ((zombie.zombie.offesetLeft + 32) > (self.plant.offsetLeft + self.plant.offsetWidth) &&
-        //   zombie.vitality >= 0 && self.vitality >= 0) {
+
         if(zombie.vitality >= 0 && self.vitality >= 0 && (zombie.zombie.offsetLeft + 32) > (self.plant.offsetLeft + self.plant.offsetWidth)) {
-        //  console.log('im inside zombie vitality ' + zombie.vitality)
+
           if (zombie.vitality == 2) {
             zombie.loseHead();
             zombie.stopWalk();
@@ -127,7 +120,7 @@ Peashooter.prototype.shoot = function(zombiesG) {
                   window.location.reload();
                 }, 1000);
               } else {
-                // gamePass();
+
               }
             }
             //shoot the remaining zombies
@@ -139,14 +132,14 @@ Peashooter.prototype.shoot = function(zombiesG) {
           // zombie approach and start eating plants
           if (zombie.vitality > 0) {
             self.vitality = self.vitality - 1;
-          //  console.log('plant vitality is ' + self.vitality)
+
           }
           // record the amount of zombies stopped walking
           zombieStoppedGroup.push(zombie);
           //delete the repeat count
           zombieStoppedGroup.unique();
           if (zombie.vitality > 2) {
-          //  console.log('im eating the plant')
+
             zombie.eatPlant();
           } else if (zombie.vitality == 2) {
             zombie.loseHead();
@@ -169,7 +162,7 @@ Peashooter.prototype.shoot = function(zombiesG) {
                     window.location.reload();
                 }, 1000);
               } else {
-                // gamePass();
+
               }
             }
             self.shoot(newZombiesGroup);
@@ -223,8 +216,7 @@ Zombie.prototype.init = function() {
   let zombieEle = document.createElement('div');
   zombieEle.className = "zombie";
   zombieEle.style.left = this.left + 'px';
-  // the offsetLeft is not working
-  // console.log(zombieEle.offsetLeft)
+
   zombieEle.innerHTML = "<img src='assets/zombie-01.gif'>";
   zombiesContainer.appendChild(zombieEle);
   return zombieEle;
@@ -236,7 +228,7 @@ Zombie.prototype.walk = function() {
   self.zombieWalk = setInterval(function() {
     self.zombie.style.left = self.zombie.offsetLeft - 1 + "px";
     if (self.zombie.offsetLeft < -120) {
-    //  console.log('the offsetLeft is ' + self.zombie.offsetLeft)
+
       if (gameEnd) return;
       gameOver();
     }
@@ -424,7 +416,7 @@ let placePlant = function(evt) {
       plant = new Walnut;
       gameState.sunCount -= 50;
     }
-  //  console.log(plant.plant);
+
     plant.plant.style.left = evt.offsetX - 48 + 'px';
     plantsContainer.appendChild(plant.plant);
     gameState.readyPlant = '';
@@ -445,7 +437,7 @@ let gameBegin = function() {
     sun.dropSun();
   }, 5000);
   backgroundEle.addEventListener('click', collectSun);
-  //  gameConsoleEle.addEventListener('drag', dragPlant);
+
   gameConsoleEle.addEventListener('click', selectPlant);
   //use plants to fight zombies
   //generate zombies
@@ -458,14 +450,7 @@ let gameBegin = function() {
       }, 3000);
 
       setTimeout(function() {
-        //if (totalAmountOfZombies < 2) return;
-        //a wave of zombies
-        //to create a flagship zombie
-        // let flagZombie = new Zombie(12, 60, 830, "FlagZombie/FlagZombie");
-        // zombiesGroup.push(flagZombie);
-        // zombiesTotal.push(flagZombie);
-        // flagZombie.walk();
-        //if (totalAmountOfZombies < 3) return;
+        
         let buildZombiesTimer = setInterval(function() {
           let zombie = new Zombie();
           zombiesGroup.push(zombie);
