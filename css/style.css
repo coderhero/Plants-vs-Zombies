@@ -27,7 +27,7 @@ body {
 }
 .background > .plants-container {
   position: absolute;
-  left: 0;
+  left: 244px;
   top: 0;
   z-index: 3;
 
@@ -39,7 +39,7 @@ body {
 }
 .background > .zombies-container {
   position: absolute;
-  left: 0;
+  left: 244px;
   top: 0;
   z-index: 3;
 }
@@ -63,7 +63,7 @@ body {
 .zombie {
   position: absolute;
   top: 0;
-  left: 1000px;
+  left: 760px;
 }
 
 
@@ -72,7 +72,7 @@ body {
   width: 34px;
   height: 34px;
   z-index: 98;
-  
+
 }
 .sun {
   width: 80px;
@@ -130,5 +130,5 @@ body {
 }
 .zombieHead {
   position: absolute;
-  z-index: 89;
+  z-index: 92;
 }

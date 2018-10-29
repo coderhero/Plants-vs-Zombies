@@ -28,7 +28,7 @@ Peashooter.prototype.locatePlant = function(left) {
   let peashooter = this.plant;
   peashooter.style.left = (left || 480) + 'px';
   peashooter.style.top = 250 + 'px';
-  plants.appendChild(peashooter);
+  plantsContainer.appendChild(peashooter);
 }
 Peashooter.prototype.pod = function() {
   let pod = document.createElement('img');
@@ -56,8 +56,8 @@ Peashooter.prototype.shoot = function(zombiesG) {
         continue;
       }
       // if there is zombie and peashooter
-      let tempOffSetLeft = zombiesG[i].zombie.offsetLeft;
-      zombiesOffSetArr.push(tempOffSetLeft);
+      // let tempOffSetLeft = zombiesG[i].zombie.offsetLeft;
+      // zombiesOffSetArr.push(tempOffSetLeft);
 
     }
     // if there is no zombie on the peashooter's right side, then don't shoot
@@ -73,44 +73,49 @@ Peashooter.prototype.shoot = function(zombiesG) {
         // when the zombie is at the left of the plant, stop shooting
         if ((zombie.zombie.offsetLeft + 34) < self.plant.offsetLeft - 74) continue;
         // when pod hits the zombie
-        if (pod.offsetLeft > zombie.zombie.offsetLeft + 55) {
+        if (pod.offsetLeft > zombie.zombie.offsetLeft + 54) {
           clearInterval(pod.moveTimer);
           pod.moveTimer = null;
           pod.src = "assets/podHit.gif";
           setTimeout(function() {
             if (pod.parentNode != zombiesContainer) return;
             zombiesContainer.removeChild(pod);
-          }, 260);
+          }, 280);
           if (zombie.vitality >= 0) {
             zombie.vitality -= 1;
-            console.log(zombie.vitality);
           }
         }
         //when the zombie is at the right side of the peashooter
-        if ((zombie.zombie.offesetLeft + 34) > (self.plant.offsetLeft + self.plant.offsetWidth) &&
-          zombie.vitality >= 0 && self.vitality >= 0) {
+        // if ((zombie.zombie.offesetLeft + 32) > (self.plant.offsetLeft + self.plant.offsetWidth) &&
+        //   zombie.vitality >= 0 && self.vitality >= 0) {
+        if(zombie.vitality >= 0 && self.vitality >= 0 && (zombie.zombie.offsetLeft + 32) > (self.plant.offsetLeft + self.plant.offsetWidth)) {
+        //  console.log('im inside zombie vitality ' + zombie.vitality)
           if (zombie.vitality == 2) {
             zombie.loseHead();
             zombie.stopWalk();
             zombie.noHeadWalk();
           } else if (zombie.vitality == 1) {
-            zombie.down();
+            zombie.getDown();
           } else if (zombie.vitality == 0) {
             zombie.die(zombieDeadGroup);
             self.stopShoot();
             //delete dead zombie
-            zombiesG.remove(zombie);
+            let index = zombiesG.indexOf(zombie);
+            if (index != -1) {
+                zombiesG.splice(index, 1);
+            }
             newZombiesGroup = zombiesG;
             //all zombies dead and you win
-            if (zombieDeadGroup.length >= zombiesTotal) {
-              if (zombiesTotal < 8) {
+            if (zombieDeadGroup.length >= totalAmountOfZombies) {
+              if (totalAmountOfZombies < 18) {
                 setTimeout(function() {
                   alert("success you can enter next level");
                   // window.location.href = "game.html#" + (zombiesTotal + 1);
+                  window.location.href = 'index.html'
                   window.location.reload();
                 }, 1000);
               } else {
-                gamePass();
+                // gamePass();
               }
             }
             //shoot the remaining zombies
@@ -118,36 +123,41 @@ Peashooter.prototype.shoot = function(zombiesG) {
           }
           return false;
 
-        } else if ((zombie.zombie.offsetLeft + 35) <= (self.plant.offsetLeft + self.plant.offsetWidth) && zombie.vitality >= 0 && zombie.vitality >= 0) {
+        }else if ((zombie.zombie.offsetLeft + 34) <= (self.plant.offsetLeft + self.plant.offsetWidth) && zombie.vitality >= 0 && self.vitality >= 0) {
           // zombie approach and start eating plants
           if (zombie.vitality > 0) {
-            self.vitality -= 1;
+            self.vitality = self.vitality - 1;
+            console.log('plant vitality is ' + self.vitality)
           }
           // record the amount of zombies stopped walking
           zombieStoppedGroup.push(zombie);
           //delete the repeat count
           zombieStoppedGroup.unique();
           if (zombie.vitality > 2) {
+            console.log('im eating the plant')
             zombie.eatPlant();
           } else if (zombie.vitality == 2) {
             zombie.loseHead();
-            zombie.noHeadEatPlant();
+            zombie.eatPlantWithoutHead();
           } else if (zombie.vitality == 1) {
-            zombie.down();
+            zombie.getDown();
           } else if (zombie.vitality == 0) {
             zombie.die(zombieDeadGroup);
             self.stopShoot();
-            zombiesG.remove(zombie);
+            let indexZ = zombiesG.indexOf(zombie);
+            if (indexZ != -1) {
+                zombiesG.splice(indexZ, 1);
+            }
             newZombiesGroup = zombiesG;
             // all zombies dead and you win
-            if (zombieDeadGroup.length >= zombiesTotal) {
-              if (zombiesTotal < 8) {
+            if (zombieDeadGroup.length >= totalAmountOfZombies) {
+              if (totalAmountOfZombies < 18) {
                 setTimeout(function() {
                   alert("you win! Go to the next level.");
                   window.location.reload();
                 }, 1000);
               } else {
-                gamePass();
+                // gamePass();
               }
             }
             self.shoot(newZombiesGroup);
@@ -193,7 +203,7 @@ function Zombie() {
   // this.category = "zombie";
   this.vitality = 6;
   this.left = 900;
-  this.walkSpeed = 70;
+  this.walkSpeed = 110;
 
 }
 
@@ -213,7 +223,8 @@ Zombie.prototype.walk = function() {
   let self = this;
   self.zombieWalk = setInterval(function() {
     self.zombie.style.left = self.zombie.offsetLeft - 1 + "px";
-    if (self.zombie.offsetLeft < 140) {
+    if (self.zombie.offsetLeft < -120) {
+      console.log('the offsetLeft is ' + self.zombie.offsetLeft)
       if (gameEnd) return;
       gameOver();
     }
@@ -225,7 +236,7 @@ Zombie.prototype.noHeadWalk = function() {
   let self = this;
   self.zombieWalk = setInterval(function() {
     self.zombie.style.left = self.zombie.offsetLeft - 1 + "px";
-    if (self.zombie.offsetLeft < -100) {
+    if (self.zombie.offsetLeft < -120) {
       if (gameEnd) return;
       gameOver();
     }
@@ -238,8 +249,8 @@ Zombie.prototype.loseHead = function() {
   let head = document.createElement("img");
   head.src = "assets/zombie-01-head.gif";
   head.className = "zombieHead";
-  head.style.left = self.zombie.offsetLeft + "px";
-  head.style.top = self.zombie.offsetTop + "px";
+  head.style.left = this.zombie.offsetLeft + "px";
+  head.style.top = this.zombie.offsetTop + "px";
   zombiesContainer.appendChild(head);
   setTimeout(function() {
     zombiesContainer.removeChild(head);
@@ -276,8 +287,8 @@ let gameEnd;
 let gameOver = function() {
   gameEnd = true;
   let endingMessage = document.createElement('img');
-  endingMessage.src = "assets/gameOver.jpg"
-  endingMessage.className = "ZombieWinsMessage"
+  endingMessage.src = "assets/gameOver.jpg";
+  endingMessage.className = "ZombieWinsMessage";
   backgroundEle.appendChild(endingMessage);
   setTimeout(function() {
     window.alert('Game is Over, Zombie wins')
@@ -295,7 +306,7 @@ let peaConsoleEle = document.querySelector('#peashooter');
 let walnutConsoleEle = document.querySelector('#walnut');
 let bgImageEle = document.querySelector('#bgImage');
 
-let totalZombies = 8;
+let totalAmountOfZombies = 12;
 // let currentZombies = [];
 // zombies already show
 let zombiesGroup = [];
@@ -382,7 +393,6 @@ let selectPlant = function(evt) {
 
   if (evt.target.id === "peashooter-active") {
     sodPathEle.addEventListener('click', placePlant);
-    console.log('ready to place plant')
     gameState.readyPlant = "peashooter";
 
     if (gameState.sunCount < 50) {
@@ -392,10 +402,8 @@ let selectPlant = function(evt) {
       evt.target.id = "peashooter";
     }
   } else if (evt.target.id === 'walnut-active') {
-    gameState.sunCount -= 50;
     sodPathEle.addEventListener('click', placePlant);
     gameState.readyPlant = 'walnut';
-    sunCountEle.innerText = gameState.sunCount;
     if (gameState.sunCount < 50) {
       evt.target.id = "walnut";
       peaConsoleEle.id = "peashooter";
@@ -411,7 +419,7 @@ let gameState = {
 }
 
 let placePlant = function(evt) {
-  if (evt.clientX > 30 && evt.clientX + 20 < this.offsetWidth) {
+  if (evt.offsetX > 30 && evt.offsetX + 20 < this.offsetWidth) {
     let plant;
     if (gameState.readyPlant === "peashooter") {
       plant = new Peashooter;
@@ -421,7 +429,7 @@ let placePlant = function(evt) {
       plant = new Walnut;
       gameState.sunCount -= 50;
     }
-    plant.plant.style.left = evt.clientX - 48 + 'px';
+    plant.plant.style.left = evt.offsetX - 48 + 'px';
     plantsContainer.appendChild(plant.plant);
     gameState.readyPlant = '';
     sodPathEle.removeEventListener('click', placePlant);
@@ -453,27 +461,22 @@ let gameBegin = function() {
       }, 3000);
 
       setTimeout(function() {
-        //if (totalZombies < 2) return;
+        //if (totalAmountOfZombies < 2) return;
         //a wave of zombies
-        //prepare.src = "img/LargeWave.gif";
-        //prepare.style.visibility = "visible";
-        // setTimeout(function() {
-        //  prepare.style.visibility = "hidden";
-        // }, 4000);
         //to create a flagship zombie
         // let flagZombie = new Zombie(12, 60, 830, "FlagZombie/FlagZombie");
         // zombiesGroup.push(flagZombie);
         // zombiesTotal.push(flagZombie);
         // flagZombie.walk();
-        //if (totalZombies < 3) return;
-        let buildZombies = setInterval(function() {
-          var zombie = new Zombie();
+        //if (totalAmountOfZombies < 3) return;
+        let buildZombiesTimer = setInterval(function() {
+          let zombie = new Zombie();
           zombiesGroup.push(zombie);
           zombiesTotal.push(zombie);
           zombie.walk();
-          if (zombiesTotal.length >= totalZombies) {
-            clearInterval(buildZombies);
-            buildZombies = null;
+          if (zombiesTotal.length >= totalAmountOfZombies) {
+            clearInterval(buildZombiesTimer);
+            buildZombiesTimer = null;
           }
         }, 5000);
       }, 25000);
@@ -483,7 +486,7 @@ let gameBegin = function() {
 
 function Walnut() {
   this.plant = this.init();
-  this.vitality = 8;
+  this.vitality = 6;
 
 }
 Walnut.prototype.init = function() {
