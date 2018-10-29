@@ -49,7 +49,8 @@ Peashooter.prototype.init = function() {
   return peashooter;
 };
 ```
-
+### Game Link 
+[get started to fight zombies](http://righteous-stop.surge.sh/)
 ### Technologies
 - HTML5 & CSS3
 - Native Javascript
