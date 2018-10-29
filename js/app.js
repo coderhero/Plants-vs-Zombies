@@ -1,21 +1,19 @@
-// let gameState = {
-//   sunCount: 0,
-//   isZombieWin: false,
-//   isSunExist: true,
-//   plantArr: [],
-//   readyPlant: {},
-//   bullets: [],
-//   zombiesArr: []
-// }
 // function to create a peashooter object
+let backgroundEle = document.querySelector('.background');
+let sodPathEle = document.querySelector('.sod');
+let zombiesContainer = document.querySelector('.zombies-container');
+let plantsContainer = document.querySelector('.plants-container');
+let sunCountEle = document.querySelector('#suncount');
+let gameConsoleEle = document.querySelector('.game-console');
+let peaConsoleEle = document.querySelector('#peashooter');
+let walnutConsoleEle = document.querySelector('#walnut');
+let bgImageEle = document.querySelector('#bgImage');
+
 function Peashooter() {
   // peashooter initialization
   this.plant = this.init();
-  let plantsContainer = document.querySelector('.plants-container');
-  let zombiesContainer = document.querySelector('.zombies-container');
   this.vitality = 3;
   this.shootTime = 3000;
-
 }
 // peashooter prototype initialization
 Peashooter.prototype.init = function() {
@@ -30,6 +28,7 @@ Peashooter.prototype.locatePlant = function(left) {
   peashooter.style.top = 250 + 'px';
   plantsContainer.appendChild(peashooter);
 }
+// peashooter is the weapon to shoot pods
 Peashooter.prototype.pod = function() {
   let pod = document.createElement('img');
   pod.src = 'assets/plant-bullet.gif';
@@ -39,8 +38,9 @@ Peashooter.prototype.pod = function() {
   zombiesContainer.appendChild(pod);
   return pod;
 }
-
+// shoot method is used to launch pods and kill zombies
 Peashooter.prototype.shoot = function(zombiesG) {
+  // store this into self for different scopes
   let self = this;
   // create the function of pod to kill zombies
   let generateShoot = function() {
@@ -55,24 +55,24 @@ Peashooter.prototype.shoot = function(zombiesG) {
       if (self.plant === false) {
         continue;
       }
+      // this if statement is intended to check if there is no zombie on the peashooter's right side, then don't shoot
       // if there is zombie and peashooter
       // let tempOffSetLeft = zombiesG[i].zombie.offsetLeft;
       // zombiesOffSetArr.push(tempOffSetLeft);
-
     }
-    // if there is no zombie on the peashooter's right side, then don't shoot
     // if ((Math.max.apply(null, zombieOnTheRightOffSetArr) + 35) < self.plant.offsetLeft - 75) return;
     let pod = self.pod();
+    // this timer is used for pod flying/shooting animation
     pod.moveTimer = setInterval(function() {
-      // increase the pod offset by 10px
+      // increase the pod offsetLeft by 10px
       pod.style.left = pod.offsetLeft + 10 + 'px';
-      // for loop to go through all zombies
+      // for loop to go through all zombies and shoot the immediate enemy
       for (var i = 0; i < zombiesG.length; i++) {
         let zombie = zombiesG[i];
         if (!zombie.zombie || !self.plant) continue;
         // when the zombie is at the left of the plant, stop shooting
         if ((zombie.zombie.offsetLeft + 34) < self.plant.offsetLeft - 74) continue;
-        // when pod hits the zombie
+        // when pod hits the zombie on the right side
         if (pod.offsetLeft > zombie.zombie.offsetLeft + 54) {
           clearInterval(pod.moveTimer);
           pod.moveTimer = null;
@@ -95,7 +95,7 @@ Peashooter.prototype.shoot = function(zombiesG) {
             zombie.stopWalk();
             zombie.noHeadWalk();
           } else if (zombie.vitality == 1) {
-            zombie.getDown();
+            zombie.fallDown();
           } else if (zombie.vitality == 0) {
             zombie.die(zombieDeadGroup);
             self.stopShoot();
@@ -110,8 +110,6 @@ Peashooter.prototype.shoot = function(zombiesG) {
               if (totalAmountOfZombies < 18) {
                 setTimeout(function() {
                   alert("success you can enter next level");
-                  // window.location.href = "game.html#" + (zombiesTotal + 1);
-                  // window.location.href = 'index.html'
                   window.location.reload();
                 }, 1000);
               } else {
@@ -123,7 +121,7 @@ Peashooter.prototype.shoot = function(zombiesG) {
           }
           return false;
 
-        }else if ((zombie.zombie.offsetLeft + 34) <= (self.plant.offsetLeft + self.plant.offsetWidth) && zombie.vitality >= 0 && self.vitality >= 0) {
+        }else if ((zombie.zombie.offsetLeft + 14) <= (self.plant.offsetLeft + self.plant.offsetWidth) && zombie.vitality >= 0 && self.vitality >= 0) {
           // zombie approach and start eating plants
           if (zombie.vitality > 0) {
             self.vitality = self.vitality - 1;
@@ -140,7 +138,7 @@ Peashooter.prototype.shoot = function(zombiesG) {
             zombie.loseHead();
             zombie.eatPlantWithoutHead();
           } else if (zombie.vitality == 1) {
-            zombie.getDown();
+            zombie.fallDown();
           } else if (zombie.vitality == 0) {
             zombie.die(zombieDeadGroup);
             self.stopShoot();
@@ -153,8 +151,8 @@ Peashooter.prototype.shoot = function(zombiesG) {
             if (zombieDeadGroup.length >= totalAmountOfZombies) {
               if (totalAmountOfZombies < 18) {
                 setTimeout(function() {
-                  alert("you win! Go to the next level.");
-                  window.location.reload();
+                    alert("you win! Go to the next level.");
+                    window.location.reload();
                 }, 1000);
               } else {
                 // gamePass();
@@ -200,11 +198,11 @@ Peashooter.prototype.die = function() {
 function Zombie() {
   let zombiesContainer = document.querySelector('.zombies-container');
   this.zombie = this.init();
-  // this.category = "zombie";
   this.vitality = 6;
+  // not sure why but the left setting is not working, I have to set it in CSS and then worked
   this.left = 900;
-  this.walkSpeed = 30;
-
+  // the smaller value, the faster walking
+  this.walkSpeed = 40;
 }
 
 Zombie.prototype.init = function() {
@@ -224,7 +222,7 @@ Zombie.prototype.walk = function() {
   self.zombieWalk = setInterval(function() {
     self.zombie.style.left = self.zombie.offsetLeft - 1 + "px";
     if (self.zombie.offsetLeft < -120) {
-      console.log('the offsetLeft is ' + self.zombie.offsetLeft)
+    //  console.log('the offsetLeft is ' + self.zombie.offsetLeft)
       if (gameEnd) return;
       gameOver();
     }
@@ -245,6 +243,7 @@ Zombie.prototype.noHeadWalk = function() {
   img.src = "assets/zombieNoHeadWalk.gif";
 
 };
+
 Zombie.prototype.loseHead = function() {
   let head = document.createElement("img");
   head.src = "assets/zombie-01-head.gif";
@@ -272,7 +271,7 @@ Zombie.prototype.eatPlantWithoutHead = function() {
   img.src = "assets/zombieNoHeadAttack.gif"
 }
 // zombie is dying
-Zombie.prototype.getDown = function() {
+Zombie.prototype.fallDown = function() {
   this.stopWalk();
   let img = this.zombie.querySelector('img');
   img.src = 'assets/zombieDying.gif'
@@ -291,23 +290,13 @@ let gameOver = function() {
   endingMessage.className = "ZombieWinsMessage";
   backgroundEle.appendChild(endingMessage);
   setTimeout(function() {
-    window.alert('Game is Over, Zombie wins. Please try again!')
+    alert('Game is Over, Zombie wins. Please try again!')
   }, 2800);
   setTimeout(function() {
     location.reload();
   }, 3000);
 };
 
-
-let backgroundEle = document.querySelector('.background');
-let sodPathEle = document.querySelector('.sod');
-let zombiesContainer = document.querySelector('.zombies-container');
-let plantsContainer = document.querySelector('.plants-container');
-let sunCountEle = document.querySelector('#suncount');
-let gameConsoleEle = document.querySelector('.game-console');
-let peaConsoleEle = document.querySelector('#peashooter');
-let walnutConsoleEle = document.querySelector('#walnut');
-let bgImageEle = document.querySelector('#bgImage');
 
 let totalAmountOfZombies = 12;
 // let currentZombies = [];
