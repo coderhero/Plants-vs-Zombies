@@ -1,4 +1,4 @@
-// function to create a peashooter object
+
 let backgroundEle = document.querySelector('.background');
 let sodPathEle = document.querySelector('.sod');
 let zombiesContainer = document.querySelector('.zombies-container');
@@ -9,6 +9,19 @@ let peaConsoleEle = document.querySelector('#peashooter');
 let walnutConsoleEle = document.querySelector('#walnut');
 let bgImageEle = document.querySelector('#bgImage');
 
+let totalAmountOfZombies = 12;
+// let currentZombies = [];
+// zombies already show
+let zombiesGroup = [];
+// all of zombies
+let zombiesTotal = [];
+// keep on updating the zombie states
+let newZombiesGroup;
+//record the zombies stopped walking
+let zombieStoppedGroup = [];
+// record dead zombies
+let zombieDeadGroup = [];
+// function to create a peashooter object
 function Peashooter() {
   // peashooter initialization
   this.plant = this.init();
@@ -40,11 +53,12 @@ Peashooter.prototype.pod = function() {
 }
 // shoot method is used to launch pods and kill zombies
 Peashooter.prototype.shoot = function(zombiesG) {
-  // store this into self for different scopes
+  // store this into self for the use of different function scopes
   let self = this;
   // create the function of pod to kill zombies
   let generateShoot = function() {
-    if (zombiesG < 1) {
+    // if there is no zombie then don't shoot
+    if (zombiesG.length < 1) {
       return;
     }
     let zombiesOffSetArr = [];
@@ -109,7 +123,7 @@ Peashooter.prototype.shoot = function(zombiesG) {
             if (zombieDeadGroup.length >= totalAmountOfZombies) {
               if (totalAmountOfZombies < 18) {
                 setTimeout(function() {
-                  alert("success you can enter next level");
+                  alert("success! You win! You can enter next level");
                   window.location.reload();
                 }, 1000);
               } else {
@@ -121,18 +135,18 @@ Peashooter.prototype.shoot = function(zombiesG) {
           }
           return false;
 
-        }else if ((zombie.zombie.offsetLeft + 14) <= (self.plant.offsetLeft + self.plant.offsetWidth) && zombie.vitality >= 0 && self.vitality >= 0) {
+        }else if (zombie.vitality >= 0 && self.vitality >= 0 && (zombie.zombie.offsetLeft + 14) <= (self.plant.offsetLeft + self.plant.offsetWidth)) {
           // zombie approach and start eating plants
           if (zombie.vitality > 0) {
             self.vitality = self.vitality - 1;
-            console.log('plant vitality is ' + self.vitality)
+          //  console.log('plant vitality is ' + self.vitality)
           }
           // record the amount of zombies stopped walking
           zombieStoppedGroup.push(zombie);
           //delete the repeat count
           zombieStoppedGroup.unique();
           if (zombie.vitality > 2) {
-            console.log('im eating the plant')
+          //  console.log('im eating the plant')
             zombie.eatPlant();
           } else if (zombie.vitality == 2) {
             zombie.loseHead();
@@ -298,19 +312,6 @@ let gameOver = function() {
 };
 
 
-let totalAmountOfZombies = 12;
-// let currentZombies = [];
-// zombies already show
-let zombiesGroup = [];
-// all of zombies
-let zombiesTotal = [];
-// keep on updating the zombie states
-let newZombiesGroup;
-//record the zombies stopped walking
-let zombieStoppedGroup = [];
-// record dead zombies
-let zombieDeadGroup = [];
-
 function Sun() {
   this.sun = this.create();
   this.value = 50;
@@ -423,7 +424,7 @@ let placePlant = function(evt) {
       plant = new Walnut;
       gameState.sunCount -= 50;
     }
-    console.log(plant.plant);
+  //  console.log(plant.plant);
     plant.plant.style.left = evt.offsetX - 48 + 'px';
     plantsContainer.appendChild(plant.plant);
     gameState.readyPlant = '';

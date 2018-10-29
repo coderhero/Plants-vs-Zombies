@@ -10,13 +10,16 @@ This is a simple prototype of action-strategy game Plants vs Zombies. The playin
 - Suns are falling on the lawn randomly at a set time frame.
 - Plants include peashooter and walnut. Peashooter cost 100 sun coins, walnut cost 50 sun coins.
 - Each plant has its unique offensive or defensive capability.
-- Peashooter is able to launch bullets to shoot zombies and six bullets will kill a zombie.
+- Peashooter is able to launch bullets to shoot zombies and five bullets will kill a zombie.
 - User need to click to select the plant in the menu and place the plant on sod lane by clicking.
 - Zombies are spawned from the right side of the screen and approaching to the house.
+- If zombie is in a critical situation, it will lose the head and continue walking without head.
+- If zombie is almost dying, it will fall down on the ground.
 - If all zombies are dead, you win the game. If any zombie breaches the house, game is lost.
 
 ### Post MVP
 - Walnut has a high defensive ability and able to stop the zombies for a period of time.
+- Users will enter next level after each success. They can unlock a new plant.
 
 ### Specs and Planning
 - setInterval to generate suns and zombies.
@@ -30,6 +33,8 @@ This is a simple prototype of action-strategy game Plants vs Zombies. The playin
 - when all zombies are killed, the game is winning.
 
 ### Code Snippet
+- Instead of storing the object data into the DOM dataset, I write the function to create Peashooter model in Javascript, the function includes the model datasets and the DOM element initialization. It provides the ability to modify my model conveniently and extensibility. I also refactor my model of Zombie and Sun in Javascript.
+
 ```
 function Peashooter() {
   // peashooter initialization
